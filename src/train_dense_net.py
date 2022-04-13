@@ -41,7 +41,7 @@ def regress():
 def op(x):
     result_0, result_1 = prepare(127)(x)
 
-    return regress()((result_0, dense_net(64)(result_1)))
+    return regress()((result_0, dense_net(32)(result_1)))
 
 
 def rmspe(y_true, y_pred):
