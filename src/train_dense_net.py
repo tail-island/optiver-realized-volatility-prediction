@@ -7,7 +7,7 @@ from funcy import concat, identity, juxt, partial, repeat, take
 from operator import getitem
 
 
-BATCH_SIZE = 128
+BATCH_SIZE = 64
 EPOCH_SIZE = 100
 
 rng = np.random.default_rng(0)
@@ -41,7 +41,7 @@ def regress():
 def op(x):
     result_0, result_1 = prepare(127)(x)
 
-    return regress()((result_0, dense_net(32)(result_1)))
+    return regress()((result_0, dense_net(48)(result_1)))
 
 
 def rmspe(y_true, y_pred):
