@@ -1,7 +1,7 @@
 import numpy as np
 import tensorflow as tf
 
-from dataset import Generator, get_dataset, read_pickle
+from dataset import Generator, get_xs_from_pickle, get_ys, read_pickle
 from funcy import identity, juxt, rcompose
 from transformer_param import NUM_BLOCKS, D_MODEL, NUM_HEADS, D_FF, DROPOUT_RATE
 from transformer import LearningRateSchedule, transformer
@@ -40,7 +40,7 @@ def get_datasets():
 
     rng.shuffle(ys)
 
-    return Generator(ys[40000:], BATCH_SIZE), get_dataset(ys[:40000])
+    return Generator(ys[40000:], BATCH_SIZE), (get_xs_from_pickle(ys[:40000]), get_ys(ys[:40000]))
 
 
 op = rcompose(prepare(127),

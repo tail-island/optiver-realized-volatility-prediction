@@ -85,6 +85,16 @@ def create_train_dataset():
         pickle.dump(ys, f)
 
 
+def get_xs_from_pickle(ys):
+    return (np.reshape(np.array(tuple(map(lambda y: y[0], ys)), dtype=np.int32), (-1, 1)),
+            np.reshape(np.array(tuple(map(lambda y: read_pickle(f'x-{y[0]}-{y[1]}-1.pickle'), ys)), dtype=np.float32), (-1, 600, 4 * 2)),
+            np.reshape(np.array(tuple(map(lambda y: read_pickle(f'x-{y[0]}-{y[1]}-2.pickle'), ys)), dtype=np.float32), (-1, 600, 1 * 3)))
+
+
+def get_ys(ys):
+    return np.array(tuple(map(lambda y: y[2], ys)), dtype=np.float32)
+
+
 class Generator(tf.keras.utils.Sequence):
     def __init__(self, ys, batch_size):
         self.ys = ys
@@ -98,17 +108,7 @@ class Generator(tf.keras.utils.Sequence):
     def __getitem__(self, i):
         ys = self.ys[i * self.batch_size:(i + 1) * self.batch_size]
 
-        return ((np.reshape(np.array(tuple(map(lambda y: y[0], ys)), dtype=np.int32), (-1, 1)),
-                 np.reshape(np.array(tuple(map(lambda y: read_pickle(f'x-{y[0]}-{y[1]}-1.pickle'), ys)), dtype=np.float32), (-1, 600, 4 * 2)),
-                 np.reshape(np.array(tuple(map(lambda y: read_pickle(f'x-{y[0]}-{y[1]}-2.pickle'), ys)), dtype=np.float32), (-1, 600, 1 * 3))),
-                np.array(tuple(map(lambda y: y[2], ys)), dtype=np.float32))
+        return get_xs_from_pickle(ys), get_ys(ys)
 
     def on_epoch_end(self):
         rng.shuffle(self.ys)
-
-
-def get_dataset(ys):
-    return ((np.reshape(np.array(tuple(map(lambda y: y[0], ys)), dtype=np.int32), (-1, 1)),
-             np.reshape(np.array(tuple(map(lambda y: read_pickle(f'x-{y[0]}-{y[1]}-1.pickle'), ys)), dtype=np.float32), (-1, 600, 4 * 2)),
-             np.reshape(np.array(tuple(map(lambda y: read_pickle(f'x-{y[0]}-{y[1]}-2.pickle'), ys)), dtype=np.float32), (-1, 600, 1 * 3))),
-            np.array(tuple(map(lambda y: y[2], ys)), dtype=np.float32))

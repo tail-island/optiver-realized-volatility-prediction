@@ -2,23 +2,23 @@ import matplotlib.pyplot as plot
 import numpy as np
 import tensorflow as tf
 
-from dataset import get_dataset, read_pickle
+from dataset import get_xs_from_pickle, get_ys, read_pickle
 
 
 rng = np.random.default_rng(0)
 
 
-def get_ys():
-    result = read_pickle('ys.pickle')
+def get_dataset():
+    ys = read_pickle('ys.pickle')
 
-    rng.shuffle(result)
+    rng.shuffle(ys)
 
-    return result[:40000]
+    return get_xs_from_pickle(ys[:40000]), get_ys(ys[:40000])
 
 
 model = tf.keras.models.load_model('model')
 
-xs, ys_true = get_dataset(get_ys())
+xs, ys_true = get_dataset()
 
 ys_pred = model.predict(xs).flatten()
 

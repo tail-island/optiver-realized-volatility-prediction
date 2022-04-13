@@ -1,7 +1,7 @@
 import numpy as np
 import tensorflow as tf
 
-from dataset import Generator, get_dataset, read_pickle
+from dataset import Generator, get_xs_from_pickle, get_ys, read_pickle
 from dense_net import dense_net
 from funcy import concat, identity, juxt, partial, repeat, take
 from operator import getitem
@@ -41,7 +41,7 @@ def regress():
 def op(x):
     result_0, result_1 = prepare(127)(x)
 
-    return regress()((result_0, dense_net(32)(result_1)))
+    return regress()((result_0, dense_net(64)(result_1)))
 
 
 def rmspe(y_true, y_pred):
@@ -53,7 +53,7 @@ def get_datasets():
 
     rng.shuffle(ys)
 
-    return Generator(ys[40000:], BATCH_SIZE), get_dataset(ys[:440000])
+    return Generator(ys[40000:], BATCH_SIZE), (get_xs_from_pickle(ys[:40000]), get_ys(ys[:40000]))
 
 
 model = tf.keras.Model(*juxt(identity, op)((tf.keras.Input(shape=(1,)), tf.keras.Input(shape=(600, 4 * 2)), tf.keras.Input(shape=(600, 1 * 3)))))
