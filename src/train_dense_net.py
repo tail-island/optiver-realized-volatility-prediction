@@ -7,7 +7,7 @@ from funcy import concat, identity, juxt, partial, repeat, take
 from operator import getitem
 
 
-BATCH_SIZE = 64
+BATCH_SIZE = 128
 EPOCH_SIZE = 100
 
 rng = np.random.default_rng(0)
@@ -28,9 +28,10 @@ def regress():
         x0, x1 = x
 
         result = tf.keras.layers.Concatenate()((tf.keras.layers.Flatten()(x0), x1))
-        result = tf.keras.layers.Dense(256, use_bias=False)(result)
-        result = tf.keras.layers.BatchNormalization()(result)
-        result = tf.keras.layers.ReLU()(result)
+        result = tf.keras.layers.Dense(512, activation='gelu', use_bias=False)(result)
+        result = tf.keras.layers.Dropout(0.5)(result)
+        result = tf.keras.layers.Dense(256, activation='gelu', use_bias=False)(result)
+        result = tf.keras.layers.Dropout(0.5)(result)
         result = tf.keras.layers.Dense(1, use_bias=False)(result)
 
         return result
@@ -41,7 +42,7 @@ def regress():
 def op(x):
     result_0, result_1 = prepare(127)(x)
 
-    return regress()((result_0, dense_net(48)(result_1)))
+    return regress()((result_0, dense_net(32)(result_1)))
 
 
 def rmspe(y_true, y_pred):
@@ -53,7 +54,7 @@ def get_datasets():
 
     rng.shuffle(ys)
 
-    return Generator(ys[40000:], BATCH_SIZE), (get_xs_from_pickle(ys[:40000]), get_ys(ys[:40000]))
+    return Generator(ys[50000:], BATCH_SIZE), (get_xs_from_pickle(ys[:50000]), get_ys(ys[:50000]))
 
 
 model = tf.keras.Model(*juxt(identity, op)((tf.keras.Input(shape=(1,)), tf.keras.Input(shape=(600, 4 * 2)), tf.keras.Input(shape=(600, 1 * 3)))))

@@ -1,0 +1,6 @@
+funcy==1.17
+matplotlib==3.5.1
+numpy==1.22.3
+pandas==1.4.2
+tensorflow==2.8.0
+tensorflow_gpu==2.8.0
