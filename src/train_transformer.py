@@ -25,9 +25,10 @@ def prepare(x0_vocab_size):
 
 def regress():
     return rcompose(tf.keras.layers.Flatten(),
-                    tf.keras.layers.Dense(256, use_bias=False),
-                    tf.keras.layers.BatchNormalization(),
-                    tf.keras.layers.ReLU(),
+                    tf.keras.layers.Dense(512, activation='gelu', use_bias=False),
+                    tf.keras.layers.Dropout(0.5),
+                    tf.keras.layers.Dense(256, activation='gelu', use_bias=False),
+                    tf.keras.layers.Dropout(0.5),
                     tf.keras.layers.Dense(1, use_bias=False))
 
 
@@ -40,7 +41,7 @@ def get_datasets():
 
     rng.shuffle(ys)
 
-    return Generator(ys[40000:], BATCH_SIZE), (get_xs_from_pickle(ys[:40000]), get_ys(ys[:40000]))
+    return Generator(ys[50000:], BATCH_SIZE), (get_xs_from_pickle(ys[:50000]), get_ys(ys[:50000]))
 
 
 op = rcompose(prepare(127),
