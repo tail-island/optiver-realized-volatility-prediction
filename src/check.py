@@ -24,7 +24,10 @@ ys_pred = model.predict(xs).flatten()
 
 # TODO: 株価の単位が$0.01であることを利用した補正処理を入れる。
 
+plot.figure(figsize=(15, 15))
 plot.scatter(ys_true, ys_pred, s=10, alpha=0.1)
+plot.xlim((0, 0.05))
+plot.ylim((0, 0.05))
 plot.show()
 
 print(np.sqrt(np.mean(np.square((ys_true - ys_pred) / ys_true))))
